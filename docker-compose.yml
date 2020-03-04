@@ -1,22 +1,39 @@
-version: '3'
+version: "3"
+
 services:
-    nginx:
-        image: nginx
-        container_name: api.nginx
-        ports:
-            - "80:80"
-        volumes:
-            - ./nginx/conf:/etc/nginx/conf.d
-            - ./nginx/uwsgi_params:/etc/nginx/uwsgi_params
-            - ./static:/static
-        depends_on:
-            - python
-    python:
-        build: ./python
-        container_name: api.python
-        command: uwsgi --sockert :8001 --module django_rest_test.wsgi
-        volumes:
-            - ./django_project:/code
-            - ./static:/static
-        expose:
-            - "8001"
+  app:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=app
+      - DB_USER=postgres
+      - DB_PASS=supersecretpassword
+    depends_on:
+      - db
+      - react
+
+  db:
+    image: postgres:10-alpine
+    environment:
+      - POSTGRES_DB=app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=supersecretpassword
+
+  react:
+    build:
+      context: .
+      dockerfile: "./Dockerfile-nodejs"
+    volumes:
+      - ./frontend:/frontend
+    command: >
+        sh -c "cd frontend && npm start"
+    ports:
+      - "3000:3000"
