@@ -1,4 +1,4 @@
-.PHONY: app test migrate pro admin django react 
+#.PHONY: app test migrate pro admin django react 
 
 app:
     docker-compose run --rm app sh -c "python manage.py startapp ${app}"
