@@ -1,5 +1,0 @@
-FROM node:10.13-alpine
-MAINTAINER kanagawa App Developer Ltd
-
-RUN npm install -g create-react-app
-RUN npm install axios
