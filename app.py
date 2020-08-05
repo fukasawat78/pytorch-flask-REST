@@ -11,7 +11,6 @@ imagenet_class_index = json.load(open('./static/imagenet_class_index.json'))
 model = models.densenet121(pretrained=True)
 model.eval()
 
-
 def transform_image(image_bytes):
     my_transforms = transforms.Compose([transforms.Resize(255),
                                         transforms.CenterCrop(224),
